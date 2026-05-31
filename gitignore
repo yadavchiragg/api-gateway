@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+venv/
+.env            # ← NEVER commit real env files
+*.egg-info/
+dist/
+.pytest_cache/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.env.local      # ← NEVER commit real env files
+.env.production
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

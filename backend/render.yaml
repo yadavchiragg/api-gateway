@@ -1,0 +1,35 @@
+# ─────────────────────────────────────────────────────────
+#  render.yaml — Render Infrastructure-as-Code
+#  Deploy both the FastAPI backend + Redis with one file.
+#  Docs: https://render.com/docs/blueprint-spec
+# ─────────────────────────────────────────────────────────
+
+services:
+  # ── FastAPI Backend Web Service ─────────────────────────
+  - type: web
+    name: api-gateway-backend
+    runtime: python
+    region: oregon
+
+    # Render will auto-detect requirements.txt and install deps
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    # Environment variables — Render injects these at runtime
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: api-gateway-redis
+          property: connectionString
+      - key: RATE_LIMIT_MAX
+        value: "5"
+      - key: RATE_LIMIT_WINDOW
+        value: "10"
+
+  # ── Managed Redis Instance ──────────────────────────────
+  - type: redis
+    name: api-gateway-redis
+    region: oregon
+    plan: free          # Free tier: 25MB RAM, no persistence
+    maxmemoryPolicy: allkeys-lru
